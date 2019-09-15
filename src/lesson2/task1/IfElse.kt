@@ -68,11 +68,13 @@ fun minBiRoot(a: Double, b: Double, c: Double): Double {
 fun ageDescription(age: Int): String {
     val x = age % 10
     val y = age % 100
-    if (y in 10..20) return "$age лет" else
-        if (x == 1) return "$age год" else
-            if (x in 2..4) return "$age года" else
-                if (x in 5..9) return "$age лет" else
-                    return "$age лет"
+    return when {
+        y in 10..20 -> "$age лет"
+        x == 1 -> "$age год"
+        x in 2..4 -> "$age года"
+        x in 5..9 -> "$age лет"
+        else -> "$age лет"
+    }
 }
 
 /**
@@ -90,7 +92,7 @@ fun timeForHalfWay(
     val s = (t1 * v1 + t2 * v2 + t3 * v3) / 2
     return when {
         s - t1 * v1 <= 0 -> (s / v1)
-        s - t1* v1 - t2 * v2 <= 0 -> (t1 + (s - t1 * v1)/v2)
+        s - t1 * v1 - t2 * v2 <= 0 -> (t1 + (s - t1 * v1) / v2)
         else -> (t1 + t2 + (s - v1 * t1 - v2 * t2) / v3)
     }
 }
@@ -130,10 +132,10 @@ fun rookOrBishopThreatens(
     rookX: Int, rookY: Int,
     bishopX: Int, bishopY: Int
 ): Int {
-    if ((abs(kingX - bishopX) == abs(kingY - bishopY)) && ((rookX == kingX) || (rookY == kingY))) return 3 else
-        if (abs(kingX - bishopX) == abs(kingY - bishopY)) return 2 else
-            if ((rookX == kingX) || (rookY == kingY)) return 1 else
-                return 0
+    return if ((abs(kingX - bishopX) == abs(kingY - bishopY)) && ((rookX == kingX) || (rookY == kingY))) 3 else
+        if (abs(kingX - bishopX) == abs(kingY - bishopY)) 2 else
+            if ((rookX == kingX) || (rookY == kingY)) 1 else
+                0
 }
 
 /**
@@ -145,25 +147,30 @@ fun rookOrBishopThreatens(
  * Если такой треугольник не существует, вернуть -1.
  */
 fun triangleKind(a: Double, b: Double, c: Double): Int {
-    val s = max(max(a, b), c)
-    return when (s) {
+    return when (max(max(a, b), c)) {
         a -> {
-            if ((a >= b + c)) -1
-            else if ((sqr(a) == sqr(b) + sqr(c))) 1
-            else if ((sqr(a) > sqr(b) + sqr(c))) 2
-            else 0
+            when {
+                a >= b + c -> -1
+                sqr(a) == sqr(b) + sqr(c) -> 1
+                sqr(a) > sqr(b) + sqr(c) -> 2
+                else -> 0
+            }
         }
         b -> {
-            if ((b >= a + c)) -1
-            else if ((sqr(b) == sqr(a) + sqr(c))) 1
-            else if ((sqr(b) > sqr(a) + sqr(c))) 2
-            else 0
+            when {
+                b >= a + c -> -1
+                sqr(b) == sqr(a) + sqr(c) -> 1
+                sqr(b) > sqr(a) + sqr(c) -> 2
+                else -> 0
+            }
         }
         else -> {
-            if ((c >= b + a)) -1
-            else if ((sqr(c) == sqr(b) + sqr(a))) 1
-            else if ((sqr(c) > sqr(b) + sqr(a))) 2
-            else 0
+            when {
+                c >= b + a -> -1
+                sqr(c) == sqr(b) + sqr(a) -> 1
+                sqr(c) > sqr(b) + sqr(a) -> 2
+                else -> 0
+            }
         }
     }
 }
@@ -180,9 +187,10 @@ fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
     return when {
         ((c < a) && (d > a) && (d < b)) -> (d - a)
         ((a < c) && (b > c) && (b < d)) -> (b - c)
-        ((c < a) && (d > b))            -> (b - a)
-        ((a < c) && (b > d))            -> (d - c)
-        (b == c) || (d == a)            -> 0
+        ((c < a) && (d > b)) -> (b - a)
+        ((a < c) && (b > d)) -> (d - c)
+        ((b == c) || (d == a)) -> 0
+        ((a == c) && (b == d)) -> (b - a)
         else -> -1
     }
 }
