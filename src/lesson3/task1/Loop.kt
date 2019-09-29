@@ -2,7 +2,8 @@
 
 package lesson3.task1
 
-import kotlin.math.sqrt
+import lesson1.task1.sqr
+import kotlin.math.*
 
 /**
  * Пример
@@ -67,7 +68,15 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = TODO()
+fun digitNumber(n: Int): Int {
+    var x = 0
+    var y = n
+    do {
+        x ++
+        y /= 10
+    } while (y > 0)
+    return x
+}
 
 /**
  * Простая
@@ -75,7 +84,7 @@ fun digitNumber(n: Int): Int = TODO()
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = TODO()
+fun fib(n: Int): Int = if ((n == 1) || (n == 2)) 1 else fib(n - 1) + fib(n - 2)
 
 /**
  * Простая
@@ -83,21 +92,41 @@ fun fib(n: Int): Int = TODO()
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
-fun lcm(m: Int, n: Int): Int = TODO()
+fun lcm(m: Int, n: Int): Int {
+    var k = max(m, n)
+    while ((k % n != 0) || (k % m != 0)) {
+        k ++
+    }
+    return k
+}
 
 /**
  * Простая
  *
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
-fun minDivisor(n: Int): Int = TODO()
+fun minDivisor(n: Int): Int {
+    var x = 2
+    for (i in 1..n) {
+        if (n % x == 0) break
+        x ++
+    }
+    return x
+}
 
 /**
  * Простая
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int = TODO()
+fun maxDivisor(n: Int): Int {
+    var x = n-1
+    for (i in (n-1) downTo 1) {
+        if (n % x == 0) break
+        x --
+    }
+    return x
+}
 
 /**
  * Простая
@@ -106,7 +135,14 @@ fun maxDivisor(n: Int): Int = TODO()
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
-fun isCoPrime(m: Int, n: Int): Boolean = TODO()
+fun isCoPrime(m: Int, n: Int): Boolean {
+    var k = 2
+    for (i in 1..n){
+        if ((m % k == 0) && (n % k == 0)) return false
+        k ++
+    }
+    return true
+}
 
 /**
  * Простая
@@ -115,7 +151,11 @@ fun isCoPrime(m: Int, n: Int): Boolean = TODO()
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
+fun squareBetweenExists(m: Int, n: Int): Boolean {
+    val a = sqrt(m.toDouble()).toInt()
+    val b = sqrt(n.toDouble()).toInt()
+    return (b - a >= 1) || (sqr(a) == m)
+}
 
 /**
  * Средняя
@@ -133,7 +173,16 @@ fun squareBetweenExists(m: Int, n: Int): Boolean = TODO()
  * Написать функцию, которая находит, сколько шагов требуется для
  * этого для какого-либо начального X > 0.
  */
-fun collatzSteps(x: Int): Int = TODO()
+fun collatzSteps(x: Int): Int {
+    var counter = 0
+    var z = x
+    while (z != 1) {
+        z = if (z % 2 == 0) z/2
+        else 3 * z + 1
+        counter ++
+    }
+    return counter
+}
 
 /**
  * Средняя
@@ -164,7 +213,25 @@ fun cos(x: Double, eps: Double): Double = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun revert(n: Int): Int = TODO()
+fun revert(n: Int): Int {
+    var x = n
+    var c = 0
+    var answer = 0
+    var b = 0
+    var y = 0.0
+    while (x > 0) {
+        x /= 10
+        c ++
+    }
+    x = n
+    while (x > 0) {
+        y = (c - 1 - b).toDouble()
+        answer += ((x % 10) * 10.0.pow(y)).toInt()
+        x /= 10
+        b ++
+    }
+    return answer
+}
 
 /**
  * Средняя
@@ -175,7 +242,24 @@ fun revert(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean = TODO()
+fun isPalindrome(n: Int): Boolean {
+    var x = n
+    var b = 0.0
+    while (x > 0) {
+        b ++
+        x /= 10
+    }
+    x = n
+    if (b == 1.0) return true
+    else {
+        for (i in 1..((b / 2).toInt())) {
+            if ((x % 10) != (x / 10.0.pow(b - 1.0)).toInt()) return false
+            x = ((x % 10.0.pow(b - 1)) / 10).toInt()
+            b -= 2
+        }
+        return true
+    }
+}
 
 /**
  * Средняя
@@ -185,7 +269,18 @@ fun isPalindrome(n: Int): Boolean = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun hasDifferentDigits(n: Int): Boolean = TODO()
+fun hasDifferentDigits(n: Int): Boolean {
+    var x = n
+    var a = (x % 100) / 10
+    if (x < 10) return false
+    while (x > 0) {
+        if ((x % 10) != a) return true
+        x /= 10
+        if (x < 10) return false
+        a = (x % 100) / 10
+    }
+    return false
+}
 
 /**
  * Сложная

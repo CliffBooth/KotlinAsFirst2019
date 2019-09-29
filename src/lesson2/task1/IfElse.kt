@@ -150,7 +150,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int {
     val x = maxOf(a, b, c)
     val y = minOf(a, b, c)
     val z = a + b + c - x - y
-    return when{
+    return when {
         x >= y + z -> -1
         sqr(x) == sqr(y) + sqr(z) -> 1
         sqr(x) > sqr(y) + sqr(z) -> 2
