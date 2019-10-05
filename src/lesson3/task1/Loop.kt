@@ -70,9 +70,9 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  */
 fun digitNumber(n: Int): Int {
     var x = 0
-    var y = n
+    var y = abs(n)
     do {
-        x ++
+        x++
         y /= 10
     } while (y > 0)
     return x
@@ -84,7 +84,21 @@ fun digitNumber(n: Int): Int {
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = if ((n == 1) || (n == 2)) 1 else fib(n - 1) + fib(n - 2)
+fun fib(n: Int): Int {
+    var y = 3
+    var x1 = 1
+    var x2 = 1
+    var x3 = 2
+    if ((n == 1) || (n == 2)) return 1
+    if (n == 3) return 2
+    while (y < n) {
+        x1 = x2
+        x2 = x3
+        x3 = x2 + x1
+        y++
+    }
+        return x3
+}
 
 /**
  * Простая
@@ -93,11 +107,16 @@ fun fib(n: Int): Int = if ((n == 1) || (n == 2)) 1 else fib(n - 1) + fib(n - 2)
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
-    var k = max(m, n)
-    while ((k % n != 0) || (k % m != 0)) {
-        k ++
+    var a = max(n, m)
+    var b = min(m, n)
+    var c: Int
+    if (m == n) return m
+    while (b > 0) {
+        c = a % b
+        a = b
+        b = c
     }
-    return k
+    return m * n / a
 }
 
 /**
@@ -107,11 +126,11 @@ fun lcm(m: Int, n: Int): Int {
  */
 fun minDivisor(n: Int): Int {
     var x = 2
-    for (i in 1..n) {
-        if (n % x == 0) break
-        x ++
+    for (i in 1..sqrt(n.toDouble()).toInt()) {
+        if (n % x == 0) return x
+        x++
     }
-    return x
+    return n
 }
 
 /**
@@ -119,14 +138,7 @@ fun minDivisor(n: Int): Int {
  *
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
-fun maxDivisor(n: Int): Int {
-    var x = n-1
-    for (i in (n-1) downTo 1) {
-        if (n % x == 0) break
-        x --
-    }
-    return x
-}
+fun maxDivisor(n: Int): Int = n / minDivisor(n)
 
 /**
  * Простая
@@ -136,12 +148,16 @@ fun maxDivisor(n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
-    var k = 2
-    for (i in 1..n){
-        if ((m % k == 0) && (n % k == 0)) return false
-        k ++
+    var a = max(n, m)
+    var b = min(m, n)
+    var c: Int
+    if (m == n) return false
+    while (b > 0) {
+        c = a % b
+        a = b
+        b = c
     }
-    return true
+    return a == 1
 }
 
 /**
@@ -177,9 +193,9 @@ fun collatzSteps(x: Int): Int {
     var counter = 0
     var z = x
     while (z != 1) {
-        z = if (z % 2 == 0) z/2
+        z = if (z % 2 == 0) z / 2
         else 3 * z + 1
-        counter ++
+        counter++
     }
     return counter
 }
@@ -215,20 +231,15 @@ fun cos(x: Double, eps: Double): Double = TODO()
  */
 fun revert(n: Int): Int {
     var x = n
-    var c = 0
     var answer = 0
     var b = 0
     var y = 0.0
-    while (x > 0) {
-        x /= 10
-        c ++
-    }
     x = n
     while (x > 0) {
-        y = (c - 1 - b).toDouble()
+        y = (digitNumber(n) - 1 - b).toDouble()
         answer += ((x % 10) * 10.0.pow(y)).toInt()
         x /= 10
-        b ++
+        b++
     }
     return answer
 }
@@ -243,24 +254,10 @@ fun revert(n: Int): Int {
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun isPalindrome(n: Int): Boolean {
-    var x = n
-    var b = 0.0
-    while (x > 0) {
-        b ++
-        x /= 10
-    }
-    x = n
-    if (b == 1.0) return true
-    else {
-        for (i in 1..((b / 2).toInt())) {
-            if ((x % 10) != (x / 10.0.pow(b - 1.0)).toInt()) return false
-            x = ((x % 10.0.pow(b - 1)) / 10).toInt()
-            b -= 2
-        }
-        return true
-    }
+    if (n < 10) return true
+    return (n / 10.0.pow((digitNumber(n) - digitNumber(n) / 2).toDouble())).toInt() ==
+            revert((n % 10.0.pow((digitNumber(n) / 2).toDouble())).toInt())
 }
-
 /**
  * Средняя
  *
