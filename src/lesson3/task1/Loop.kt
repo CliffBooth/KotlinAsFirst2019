@@ -151,6 +151,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
     var a = max(n, m)
     var b = min(m, n)
     var c: Int
+    if ((m == 1) && (n == 1)) return true
     if (m == n) return false
     while (b > 0) {
         c = a % b
@@ -256,7 +257,8 @@ fun revert(n: Int): Int {
 fun isPalindrome(n: Int): Boolean {
     if (n < 10) return true
     return (n / 10.0.pow((digitNumber(n) - digitNumber(n) / 2).toDouble())).toInt() ==
-            revert((n % 10.0.pow((digitNumber(n) / 2).toDouble())).toInt())
+           revert(10.0.pow((digitNumber(n) / 2 - 1).toDouble()).toInt() +
+            (n % 10.0.pow((digitNumber(n) / 2).toDouble())).toInt()) - 1
 }
 /**
  * Средняя
