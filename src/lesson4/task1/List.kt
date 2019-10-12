@@ -166,13 +166,9 @@ fun times(a: List<Int>, b: List<Int>): Int {
  */
 fun polynom(p: List<Int>, x: Int): Int {
     if (p.isEmpty()) return 0
-    var y = 0.0
-    var a = 0.0
-    for (i in 0 until p.size) {
-        a += p[i] * (x.toDouble()).pow(y)
-        y++
-    }
-    return a.toInt()
+    var a = 0
+    for (i in 0 until p.size) a += (p[i] * (x.toDouble()).pow(i)).toInt()
+    return a
 }
 
 /**
@@ -308,7 +304,7 @@ fun convertToString(n: Int, base: Int): String {
                 31 -> b[i] = "v"
                 32 -> b[i] = "w"
                 33 -> b[i] = "x"
-                34 -> b[i] = "w"
+                34 -> b[i] = "y"
                 35 -> b[i] = "z"
             }
         }
