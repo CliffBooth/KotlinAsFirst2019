@@ -97,7 +97,7 @@ fun fib(n: Int): Int {
         x3 = x2 + x1
         y++
     }
-        return x3
+    return x3
 }
 
 /**
@@ -107,6 +107,9 @@ fun fib(n: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 fun lcm(m: Int, n: Int): Int {
+    return m * n / greatestCommonDivisor(m, n)
+}
+fun greatestCommonDivisor(m: Int, n: Int): Int {
     var a = max(n, m)
     var b = min(m, n)
     var c: Int
@@ -116,7 +119,7 @@ fun lcm(m: Int, n: Int): Int {
         a = b
         b = c
     }
-    return m * n / a
+    return a
 }
 
 /**
@@ -148,17 +151,7 @@ fun maxDivisor(n: Int): Int = n / minDivisor(n)
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
-    var a = max(n, m)
-    var b = min(m, n)
-    var c: Int
-    if ((m == 1) && (n == 1)) return true
-    if (m == n) return false
-    while (b > 0) {
-        c = a % b
-        a = b
-        b = c
-    }
-    return a == 1
+    return greatestCommonDivisor(m, n) == 1
 }
 
 /**
@@ -235,9 +228,9 @@ fun revert(n: Int): Int {
     var answer = 0
     var b = 0
     var y = 0.0
-    x = n
+    val c = digitNumber(n)
     while (x > 0) {
-        y = (digitNumber(n) - 1 - b).toDouble()
+        y = (c - 1 - b).toDouble()
         answer += ((x % 10) * 10.0.pow(y)).toInt()
         x /= 10
         b++
@@ -254,12 +247,8 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    if (n < 10) return true
-    return (n / 10.0.pow((digitNumber(n) - digitNumber(n) / 2).toDouble())).toInt() ==
-           revert(10.0.pow((digitNumber(n) / 2).toDouble()).toInt() +
-            (n % 10.0.pow((digitNumber(n) / 2).toDouble())).toInt()) / 10
-}
+fun isPalindrome(n: Int): Boolean = n == revert(n)
+
 /**
  * Средняя
  *
