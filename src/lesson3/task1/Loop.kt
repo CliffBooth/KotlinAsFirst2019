@@ -109,6 +109,7 @@ fun fib(n: Int): Int {
 fun lcm(m: Int, n: Int): Int {
     return m * n / greatestCommonDivisor(m, n)
 }
+
 fun greatestCommonDivisor(m: Int, n: Int): Int {
     var a = max(n, m)
     var b = min(m, n)
