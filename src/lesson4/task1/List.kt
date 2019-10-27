@@ -139,7 +139,8 @@ fun mean(list: List<Double>): Double {
  */
 fun center(list: MutableList<Double>): MutableList<Double> {
     val x = mean(list)
-    for (i in 0 until list.size) list[i] -= x
+    for (i in 0 until list.size)
+        list[i] -= x
     return list
 }
 
@@ -152,7 +153,8 @@ fun center(list: MutableList<Double>): MutableList<Double> {
  */
 fun times(a: List<Int>, b: List<Int>): Int {
     var c = 0
-    for (i in 0 until a.size) c += a[i] * b[i]
+    for (i in 0 until a.size)
+        c += a[i] * b[i]
     return c
 }
 
@@ -167,7 +169,8 @@ fun times(a: List<Int>, b: List<Int>): Int {
 fun polynom(p: List<Int>, x: Int): Int {
     if (p.isEmpty()) return 0
     var a = 0
-    for (i in 0 until p.size) a += (p[i] * (x.toDouble()).pow(i)).toInt()
+    for (i in 0 until p.size)
+        a += (p[i] * (x.toDouble()).pow(i)).toInt()
     return a
 }
 
@@ -182,8 +185,8 @@ fun polynom(p: List<Int>, x: Int): Int {
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
 fun accumulate(list: MutableList<Int>): MutableList<Int> {
-    if ((list.isEmpty()) || (list.size == 1)) return list
-    for (i in 1 until list.size) list[i] += list[i - 1]
+    for (i in 1 until list.size)
+        list[i] += list[i - 1]
     return list
 }
 
@@ -219,23 +222,7 @@ fun factorize(n: Int): List<Int> {
  * Результат разложения вернуть в виде строки, например 75 -> 3*5*5
  * Множители в результирующей строке должны располагаться по возрастанию.
  */
-fun factorizeToString(n: Int): String  {
-    var y = 2
-    var x = n
-    val a = mutableListOf<Int>()
-    if (n <= 3) {
-        a.add(n)
-        return a.joinToString (separator = "*")
-    }
-    while (x >= 2) {
-        while ((x % y) == 0) {
-            x /= y
-            a.add(y)
-        }
-        y += 1
-    }
-    return a.joinToString (separator = "*")
-}
+fun factorizeToString(n: Int): String = factorize(n).joinToString (separator = "*")
 
 /**
  * Средняя
@@ -248,11 +235,10 @@ fun convert(n: Int, base: Int): List<Int> {
     val a = mutableListOf<Int>()
     var x = n
     if (n == 0) a.add(0)
-    while (x > 1) {
+    while (x >= 1) {
         a.add(x % base)
         x /= base
     }
-    if (x == 1) a.add(1)
     return a.reversed()
 }
 
@@ -268,46 +254,11 @@ fun convert(n: Int, base: Int): List<Int> {
  * (например, n.toString(base) и подобные), запрещается.
  */
 fun convertToString(n: Int, base: Int): String {
-    val a = mutableListOf<Int>()
-    var x = n
-    if (n == 0) a.add(0)
-    while (x > 1) {
-        a.add(x % base)
-        x /= base
-    }
-    if (x == 1) a.add(1)
-    val b = a.reversed().toMutableList<Any>()
+    val a = convert(n, base)
+    val b = a.toMutableList<Any>()
     for (i in 0 until a.size) {
-        if (a.reversed()[i] > 9) {
-            when (a.reversed()[i]) {
-                10 -> b[i] = "a"
-                11 -> b[i] = "b"
-                12 -> b[i] = "c"
-                13 -> b[i] = "d"
-                14 -> b[i] = "e"
-                15 -> b[i] = "f"
-                16 -> b[i] = "g"
-                17 -> b[i] = "h"
-                18 -> b[i] = "i"
-                19 -> b[i] = "j"
-                20 -> b[i] = "k"
-                21 -> b[i] = "l"
-                22 -> b[i] = "m"
-                23 -> b[i] = "n"
-                24 -> b[i] = "o"
-                25 -> b[i] = "p"
-                26 -> b[i] = "q"
-                27 -> b[i] = "r"
-                28 -> b[i] = "s"
-                29 -> b[i] = "t"
-                30 -> b[i] = "u"
-                31 -> b[i] = "v"
-                32 -> b[i] = "w"
-                33 -> b[i] = "x"
-                34 -> b[i] = "y"
-                35 -> b[i] = "z"
-            }
-        }
+        if (a[i] > 9)
+            b[i] = ('a' + a[i] - 10)
     }
     return b.joinToString(separator = "")
 }
@@ -323,7 +274,7 @@ fun decimal(digits: List<Int>, base: Int): Int {
     var y = 0.0
     val a = digits.reversed().toMutableList()
     var x = 0
-    var c = 0
+    var c: Int
     for (i in 0 until a.size) {
         c = a[i] * (base.toDouble().pow(y)).toInt()
         y++
@@ -347,43 +298,43 @@ fun decimal(digits: List<Int>, base: Int): Int {
 fun decimalFromString(str: String, base: Int): Int {
     val a = mutableListOf<Int>()
     for (i in 0 until str.length) {
-            when (str[i]) {
-                '0' -> a.add(i, 0)
-                '1' -> a.add(i, 1)
-                '2' -> a.add(i, 2)
-                '3' -> a.add(i, 3)
-                '4' -> a.add(i, 4)
-                '5' -> a.add(i, 5)
-                '6' -> a.add(i, 6)
-                '7' -> a.add(i, 7)
-                '8' -> a.add(i, 8)
-                '9' -> a.add(i, 9)
-                'a' -> a.add(i, 10)
-                'b' -> a.add(i, 11)
-                'c' -> a.add(i, 12)
-                'd' -> a.add(i, 13)
-                'e' -> a.add(i, 14)
-                'f' -> a.add(i, 15)
-                'g' -> a.add(i, 16)
-                'h' -> a.add(i, 17)
-                'i' -> a.add(i, 18)
-                'j' -> a.add(i, 19)
-                'k' -> a.add(i, 20)
-                'l' -> a.add(i, 21)
-                'm' -> a.add(i, 22)
-                'n' -> a.add(i, 23)
-                'o' -> a.add(i, 24)
-                'p' -> a.add(i, 25)
-                'q' -> a.add(i, 26)
-                'r' -> a.add(i, 27)
-                's' -> a.add(i, 28)
-                't' -> a.add(i, 29)
-                'u' -> a.add(i, 30)
-                'v' -> a.add(i, 31)
-                'w' -> a.add(i, 32)
-                'x' -> a.add(i, 33)
-                'y' -> a.add(i, 34)
-                'z' -> a.add(i, 35)
+        when (str[i]) {
+            '0' -> a.add(i, 0)
+            '1' -> a.add(i, 1)
+            '2' -> a.add(i, 2)
+            '3' -> a.add(i, 3)
+            '4' -> a.add(i, 4)
+            '5' -> a.add(i, 5)
+            '6' -> a.add(i, 6)
+            '7' -> a.add(i, 7)
+            '8' -> a.add(i, 8)
+            '9' -> a.add(i, 9)
+            'a' -> a.add(i, 10)
+            'b' -> a.add(i, 11)
+            'c' -> a.add(i, 12)
+            'd' -> a.add(i, 13)
+            'e' -> a.add(i, 14)
+            'f' -> a.add(i, 15)
+            'g' -> a.add(i, 16)
+            'h' -> a.add(i, 17)
+            'i' -> a.add(i, 18)
+            'j' -> a.add(i, 19)
+            'k' -> a.add(i, 20)
+            'l' -> a.add(i, 21)
+            'm' -> a.add(i, 22)
+            'n' -> a.add(i, 23)
+            'o' -> a.add(i, 24)
+            'p' -> a.add(i, 25)
+            'q' -> a.add(i, 26)
+            'r' -> a.add(i, 27)
+            's' -> a.add(i, 28)
+            't' -> a.add(i, 29)
+            'u' -> a.add(i, 30)
+            'v' -> a.add(i, 31)
+            'w' -> a.add(i, 32)
+            'x' -> a.add(i, 33)
+            'y' -> a.add(i, 34)
+            'z' -> a.add(i, 35)
         }
     }
     return decimal(a, base)
