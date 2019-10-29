@@ -175,13 +175,13 @@ fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
  */
 fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<String, String> {
     val a = mutableMapOf<String, String>()
-        for ((service, number) in mapA) {
-            a[service] = number
-            for ((serviceB, numberB) in mapB) {
-                if (mapA[serviceB] == null) a[serviceB] = numberB
-                if ((service == serviceB) && (mapA[service] != mapB[serviceB])) a[service] += ", $numberB"
-            }
-        }
+    for ((service, number) in mapA) {
+        a[service] = number
+        if ((mapA[service] != mapB[service]) && (mapB[service] != null)) a[service] += ", ${mapB[service]}"
+    }
+    for ((service, number) in mapB) {
+        if (mapA[service] == null) a[service] = number
+    }
     return a
 }
 
@@ -276,7 +276,12 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
  * Например:
  *   extractRepeats(listOf("a", "b", "a")) -> mapOf("a" to 2)
  */
-fun extractRepeats(list: List<String>): Map<String, Int> = TODO()
+fun extractRepeats(list: List<String>): Map<String, Int> {
+    val a = mutableMapOf<String, Int>()
+    for (letter in list)
+        if (list.count { it == letter } > 1) a[letter] = (list.count {it == letter})
+    return a
+}
 
 /**
  * Средняя
@@ -332,7 +337,17 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 4) -> Pair(0, 2)
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
-fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> = TODO()
+fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
+    for (i in 0 until list.size) {
+        val list1 = list.filter { list.indexOf(it) != i}
+        for (element1 in list1)
+            if (element1 + list[i] == number) return when {
+                (i < list.indexOf(element1)) ->  i to list.indexOf(element1)
+                else -> list.indexOf(element1) to i
+            }
+    }
+    return -1 to -1
+}
 
 /**
  * Очень сложная
