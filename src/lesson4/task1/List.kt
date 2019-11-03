@@ -255,10 +255,11 @@ fun convert(n: Int, base: Int): List<Int> {
  */
 fun convertToString(n: Int, base: Int): String {
     val a = convert(n, base)
-    val b = a.toMutableList<Any>()
-    for (i in 0 until a.size) {
-        if (a[i] > 9)
-            b[i] = ('a' + a[i] - 10)
+    val b = mutableListOf<String>()
+    for (element in a) {
+        if (element > 9)
+            b.add(('a' + element - 10).toString())
+        else b.add("$element")
     }
     return b.joinToString(separator = "")
 }
@@ -297,9 +298,9 @@ fun decimal(digits: List<Int>, base: Int): Int {
  */
 fun decimalFromString(str: String, base: Int): Int {
     val a = mutableListOf<Int>()
-    for (i in 0 until str.length) {
-          if ((str[i].toInt() - 48) in (0..9)) a.add(i, str[i].toInt() - 48)
-              else a.add(i, (str[i].toInt() - 87))
+    for (element in str) {
+          if ((element.toInt() - 48) in (0..9)) a.add(element.toInt() - 48)
+              else a.add(element.toInt() - 87)
     }
     return decimal(a, base)
 }
