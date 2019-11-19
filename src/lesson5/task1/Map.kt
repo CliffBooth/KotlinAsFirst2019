@@ -150,10 +150,13 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
 fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
-    val x = mutableListOf<String>()
-    for (nameA in a)
-        if ((nameA in b) && (nameA !in x)) x.add(nameA)
-    return x
+    val x = mutableSetOf<String>()
+    for (name in a)
+        if (name in b) x.add(name)
+    val y = mutableListOf<String>()
+    for (element in x)
+        y.add(element)
+    return y
 }
 
 /**
@@ -197,20 +200,15 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
     val a = mutableMapOf<String, Double>()
-    var x = 0.0
-    var n = 0
-    for ((stock) in stockPrices) {
-        for ((stock1, price) in stockPrices) {
-            if (stock == stock1) {
-                x += price
-                n++
-            }
-        }
-        a[stock] = x / n
-        n = 0
-        x = 0.0
-    }
-    return a
+    val n = mutableMapOf<String, Double>()
+    for ((stock, price) in stockPrices)
+        a[stock] = a.getOrDefault(stock, 0.0) + price
+    for ((stock) in stockPrices)
+        n[stock] = n.getOrDefault(stock, 0.0) + 1.0
+    val b = mutableMapOf<String, Double>()
+    for ((stock) in a)
+        b[stock] = a[stock]!! / n[stock]!!
+    return b
 }
 
 /**
@@ -250,15 +248,10 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
 fun canBuildFrom(chars: List<Char>, word: String): Boolean {
-    var n = 0
-    val wordLC = word.toLowerCase()
-    val charsLC = chars.joinToString(separator = "").toLowerCase().toList()
-    for (char in wordLC) {
-        for (letter in charsLC)
-            if (char == letter) n = 1
-        if (n == 0) return false
-        n = 0
-    }
+    val a = mutableSetOf<Char>()
+    a.addAll(chars.map { it.toLowerCase() })
+    for (char in word)
+        if (!a.contains(char)) return false
     return true
 }
 
@@ -277,8 +270,8 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
 fun extractRepeats(list: List<String>): Map<String, Int> {
     val a = mutableMapOf<String, Int>()
     for (letter in list)
-        if (list.count { it == letter } > 1) a[letter] = (list.count {it == letter})
-    return a
+        a[letter] = list.count { it == letter }
+    return a.filter { it.value > 1 }
 }
 
 /**
@@ -336,14 +329,12 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    for (i in 0 until list.size) {
-        val list1 = list.filter { list.indexOf(it) != i}
-        for (element1 in list1)
-            if (element1 + list[i] == number) return when {
-                (i < list.indexOf(element1)) ->  i to list.indexOf(element1)
-                else -> list.indexOf(element1) to i
-            }
-    }
+    val a = mutableMapOf<Int, Int>()
+    for (i in 0 until list.size)
+        a[list[i]] = i
+    for (i in 0 until list.size)
+        if ((a[number - list[i]] != null) && (a[number - list[i]] != i))
+            return i to a[number - list[i]]!!
     return -1 to -1
 }
 
