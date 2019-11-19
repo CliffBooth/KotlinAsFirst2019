@@ -149,6 +149,8 @@ fun dateDigitToStr(digital: String): String {
         return ""
     } catch (e: NumberFormatException) {
         return ""
+    } catch (e: IndexOutOfBoundsException) {
+        return ""
     }
 }
 

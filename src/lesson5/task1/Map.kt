@@ -251,7 +251,7 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
     val a = mutableSetOf<Char>()
     a.addAll(chars.map { it.toLowerCase() })
     for (char in word)
-        if (!a.contains(char)) return false
+        if (!a.contains(char.toLowerCase())) return false
     return true
 }
 
