@@ -274,7 +274,24 @@ fun firstDuplicateIndex(str: String): Int {
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше либо равны нуля.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    try {
+        val a = description.split(Regex("""\s|(;\s)"""))
+        val map = mutableMapOf<Double, String>()
+        val numbers = mutableListOf<Double>()
+        for (i in 0 until a.size step 2) {
+            map[a[i + 1].toDouble()] = a[i]
+            numbers.add(a[i + 1].toDouble())
+        }
+        return map[numbers.max()]!!
+    } catch (e: UnknownFormatConversionException) {
+        return ""
+    } catch (e: NumberFormatException) {
+        return ""
+    } catch (e: IndexOutOfBoundsException) {
+        return ""
+    }
+}
 
 /**
  * Сложная
@@ -287,7 +304,29 @@ fun mostExpensive(description: String): String = TODO()
  *
  * Вернуть -1, если roman не является корректным римским числом
  */
-fun fromRoman(roman: String): Int = TODO()
+fun fromRoman(roman: String): Int {
+    if (!roman.matches(Regex("""^[IVXLCDM]+$""")))
+        return -1
+    val a = roman.split("")
+    var answer = 0
+    val map = mapOf(
+        "I" to 1,
+        "V" to 5,
+        "X" to 10,
+        "L" to 50,
+        "C" to 100,
+        "D" to 500,
+        "M" to 1000
+    )
+    for (i in 1 until a.size - 2) {
+        if (map[a[i]]!! >= map[a[i + 1]]!!) {
+            answer += map[a[i]]!!
+        } else {
+            answer -= map[a[i]]!!
+        }
+    }
+    return answer + map[a[a.size - 2]]!!
+}
 
 /**
  * Очень сложная
