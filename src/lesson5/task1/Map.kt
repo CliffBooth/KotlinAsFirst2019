@@ -95,13 +95,8 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val a = mutableMapOf<Int, MutableList<String>>()
-    for ((key, value) in grades) {
-        if (a[value] == null) {
-            a[value] = mutableListOf(key)
-        } else {
-            a[value]!!.add(key)
-        }
-    }
+    for ((key, value) in grades)
+        a.getOrPut(value) { mutableListOf() } += key
     return a
 }
 
@@ -149,15 +144,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
  * В выходном списке не должно быть повторяюихся элементов,
  * т. е. whoAreInBoth(listOf("Марат", "Семён, "Марат"), listOf("Марат", "Марат")) == listOf("Марат")
  */
-fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
-    val x = mutableSetOf<String>()
-    for (name in a)
-        if (name in b) x.add(name)
-    val y = mutableListOf<String>()
-    for (element in x)
-        y.add(element)
-    return y
-}
+fun whoAreInBoth(a: List<String>, b: List<String>): List<String> = a.toSet().intersect(b.toSet()).toList()
 
 /**
  * Средняя
@@ -270,7 +257,8 @@ fun canBuildFrom(chars: List<Char>, word: String): Boolean {
 fun extractRepeats(list: List<String>): Map<String, Int> {
     val a = mutableMapOf<String, Int>()
     for (letter in list)
-        a[letter] = list.count { it == letter }
+        if (letter !in a)
+            a[letter] = list.count { it == letter }
     return a.filter { it.value > 1 }
 }
 

@@ -73,40 +73,34 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
+val month1 = listOf(
+    "января",
+    "февраля",
+    "марта",
+    "апреля",
+    "мая",
+    "июня",
+    "июля",
+    "августа",
+    "сентября",
+    "октября",
+    "ноября",
+    "декабря"
+)
+
 fun dateStrToDigit(str: String): String {
     val parts = str.split(" ")
-    try {
-        val date = parts[0].toInt()
-        if (date < 1) return ""
-        val month = parts[1]
-        val year = parts[2].toInt()
-        val month1 = mapOf(
-            "января" to 1,
-            "февраля" to 2,
-            "марта" to 3,
-            "апреля" to 4,
-            "мая" to 5,
-            "июня" to 6,
-            "июля" to 7,
-            "августа" to 8,
-            "сентября" to 9,
-            "октября" to 10,
-            "ноября" to 11,
-            "декабря" to 12
-        )
-        var m = 0
-        for ((key, value) in month1)
-            if ((month == key) && (daysInMonth(value, year) >= date))
-                m = value
-        if (m == 0) return ""
-        return String.format("%02d.%02d.%d", date, m, year)
-    } catch (e: NumberFormatException) {
-        return ""
-    } catch (e: IndexOutOfBoundsException) {
-        return ""
-    }
+    if (parts.size != 3) return ""
+    val date = parts[0].toIntOrNull() ?: return ""
+    val month = parts[1]
+    val year = parts[2].toIntOrNull() ?: return ""
+    val m = month1.indexOf(month) + 1
+    if (!isDateValid(date, m, year)) return ""
+    return String.format("%02d.%02d.%d", date, m, year)
 }
 
+fun isDateValid(date: Int, month: Int, year: Int): Boolean =
+    daysInMonth(month, year) >= date && date in (1..31) && month in (1..12) && year > 0
 
 /**
  * Средняя
@@ -121,37 +115,12 @@ fun dateStrToDigit(str: String): String {
 fun dateDigitToStr(digital: String): String {
     val str = digital.split(".")
     if (str.size > 3) return ""
-    try {
-        val date = str[0].toInt()
-        val month = str[1].toInt()
-        val year = str[2].toInt()
-        if ((daysInMonth(month, year) < date) || (date < 1)) return ""
-        val month1 = mapOf(
-            1 to "января",
-            2 to "февраля",
-            3 to "марта",
-            4 to "апреля",
-            5 to "мая",
-            6 to "июня",
-            7 to "июля",
-            8 to "августа",
-            9 to "сентября",
-            10 to "октября",
-            11 to "ноября",
-            12 to "декабря"
-        )
-        var m = ""
-        for ((key, value) in month1)
-            if (month == key) m = value
-        if (m == "") return ""
-        return String.format("%d %s %d", date, m, year)
-    } catch (e: UnknownFormatConversionException) {
-        return ""
-    } catch (e: NumberFormatException) {
-        return ""
-    } catch (e: IndexOutOfBoundsException) {
-        return ""
-    }
+    val date = str[0].toIntOrNull() ?: return ""
+    val month = str[1].toIntOrNull() ?: return ""
+    val year = str[2].toIntOrNull() ?: return ""
+    if (!isDateValid(date, month, year)) return ""
+    val m = month1[month - 1]
+    return String.format("%d %s %d", date, m, year)
 }
 
 /**
@@ -170,7 +139,7 @@ fun dateDigitToStr(digital: String): String {
  */
 fun flattenPhoneNumber(phone: String): String {
     val a = phone.split(Regex("""[\s-]+"""))
-    if (!a.joinToString(separator = "").matches(Regex("""^\+?\d+(\(\d+\))?(\d+)?$""")))
+    if (!a.joinToString(separator = "").matches(Regex("""^\+?\d+(\(\d+\))?(\d+)$""")))
         return ""
     return a.joinToString(separator = "").filter { (it != ')') && (it != '(') }
 }
@@ -187,7 +156,7 @@ fun flattenPhoneNumber(phone: String): String {
  */
 fun bestLongJump(jumps: String): Int {
     val a = jumps.split(" ")
-    if (!a.joinToString(separator = "").matches(Regex("""^([\d\-%]+)?\d+([\d\-%]+)?$""")))
+    if (!jumps.matches(Regex("""^((\d+\s|-\s|%\s)+)?\d+(\s(\d+\s|-\s|%\s)+)?$""")))
         return -1
     return a.filter { (it != "-") && (it != "%") }.max()!!.toInt()
 }
@@ -204,12 +173,12 @@ fun bestLongJump(jumps: String): Int {
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    if (!jumps.matches(Regex("""^((\d\s[+\-%]+\s?)+)?\d+\s\+\s?((\d+\s[+\-%]+\s?)+)?$""")))
+    if (!jumps.matches(Regex("""^((\d+\s[+\-%]+\s)+)?\d+\s([\-%]+)?\++([\-%]+)?(\s(\d+\s[+\-%]+\s?)+)?$""")))
         return -1
     val a = jumps.split(" ")
     val b = mutableListOf<String>()
     for (i in 0 until a.size) {
-        if (a[i] == "+")
+        if (a[i].contains('+'))
             b.add(a[i - 1])
     }
     return b.map { it.toInt() }.max()!!
@@ -225,8 +194,7 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
-    if (!expression.matches(Regex("""^(\d+\s?[+\-]?\s?(\d+)?\s?)+$""")))
-        throw IllegalArgumentException()
+    require(expression.matches(Regex("""^\d+((\s[+\-]\s\d+)+)?$""")))
     val a = expression.split(" ")
     var add = 0
     var subtract = 0
@@ -250,15 +218,13 @@ fun plusMinus(expression: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
     val list = str.split(" ")
+    println(list)
     var x = 0
-    try {
-        for (i in 0 until list.size) {
-            x += list[i].length
-            if (list[i].toLowerCase() == list[i + 1].toLowerCase())
-                return x - list[i].length + i
-        }
-    } catch (e: IndexOutOfBoundsException) {
-        return -1
+    for (i in 0 until list.size) {
+        x += list[i].length
+        val y = list.getOrNull(i + 1) ?: return -1
+        if (list[i].toLowerCase() == y.toLowerCase())
+            return x - list[i].length + i
     }
     return -1
 }
@@ -275,22 +241,15 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше либо равны нуля.
  */
 fun mostExpensive(description: String): String {
-    try {
-        val a = description.split(Regex("""\s|(;\s)"""))
-        val map = mutableMapOf<Double, String>()
-        val numbers = mutableListOf<Double>()
-        for (i in 0 until a.size step 2) {
-            map[a[i + 1].toDouble()] = a[i]
-            numbers.add(a[i + 1].toDouble())
-        }
-        return map[numbers.max()]!!
-    } catch (e: UnknownFormatConversionException) {
-        return ""
-    } catch (e: NumberFormatException) {
-        return ""
-    } catch (e: IndexOutOfBoundsException) {
-        return ""
+    if (!description.matches(Regex("""[а-я|А-Я]+\s\d+(.\d)?((;\s[а-я|А-Я]+\s\d+(.\d)?)+)?"""))) return ""
+    val a = description.split(Regex("""\s|(;\s)"""))
+    val map = mutableMapOf<Double, String>()
+    val numbers = mutableListOf<Double>()
+    for (i in 0 until a.size step 2) {
+        map[a[i + 1].toDouble()] = a[i]
+        numbers.add(a[i + 1].toDouble())
     }
+    return map[numbers.max()]!!
 }
 
 /**
