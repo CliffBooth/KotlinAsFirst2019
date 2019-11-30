@@ -100,7 +100,7 @@ fun dateStrToDigit(str: String): String {
 }
 
 fun isDateValid(date: Int, month: Int, year: Int): Boolean =
-    daysInMonth(month, year) >= date && date in (1..31) && month in (1..12) && year > 0
+    daysInMonth(month, year) >= date && date in (1..31) && month in (1..12) && year >= 0
 
 /**
  * Средняя
@@ -139,7 +139,7 @@ fun dateDigitToStr(digital: String): String {
  */
 fun flattenPhoneNumber(phone: String): String {
     val a = phone.split(Regex("""[\s-]+"""))
-    if (!a.joinToString(separator = "").matches(Regex("""^\+?\d+(\(\d+\))?(\d+)$""")))
+    if (!a.joinToString(separator = "").matches(Regex("""^\+?\d+((\(\d+\))\d+)?$""")))
         return ""
     return a.joinToString(separator = "").filter { (it != ')') && (it != '(') }
 }
@@ -241,7 +241,8 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше либо равны нуля.
  */
 fun mostExpensive(description: String): String {
-    if (!description.matches(Regex("""[а-я|А-Я]+\s\d+(.\d)?((;\s[а-я|А-Я]+\s\d+(.\d)?)+)?"""))) return ""
+    if (!description.matches(Regex("""^[а-яА-Я\w]+\s\d+(.\d)?((;\s[а-яА-Я\w]+\s\d+(.\d)?)+)?$""")))
+        return ""
     val a = description.split(Regex("""\s|(;\s)"""))
     val map = mutableMapOf<Double, String>()
     val numbers = mutableListOf<Double>()

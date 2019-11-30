@@ -41,7 +41,7 @@ class Tests {
         assertEquals("03.04.2011", dateStrToDigit("3 апреля 2011"))
         assertEquals("", dateStrToDigit("32 сентября 2011"))
         assertEquals("", dateStrToDigit("29 февраля 1993"))
-        assertEquals("", dateStrToDigit("лол кек чебурек"))
+        assertEquals("29.02.0", dateStrToDigit("29 февраля 0"))
     }
 
     @Test
@@ -54,6 +54,7 @@ class Tests {
         assertEquals("", dateDigitToStr("ab.cd.ef"))
         assertEquals("", dateDigitToStr("32.09.2011"))
         assertEquals("", dateDigitToStr("29.02.1993"))
+        assertEquals("29 февраля 0", dateDigitToStr("29.02.0"))
     }
 
     @Test
@@ -68,6 +69,7 @@ class Tests {
         assertEquals("", flattenPhoneNumber("ab-123"))
         assertEquals("", flattenPhoneNumber("134_+874"))
         assertEquals("", flattenPhoneNumber("+7(911)"))
+        assertEquals("2", flattenPhoneNumber("2"))
     }
 
     @Test
@@ -118,6 +120,7 @@ class Tests {
         assertEquals("", mostExpensive(""))
         assertEquals("Курица", mostExpensive("Хлеб 39.9; Молоко 62.5; Курица 184.0; Конфеты 89.9"))
         assertEquals("Вино", mostExpensive("Вино 255.0"))
+        assertEquals("a", mostExpensive("a 0"))
     }
 
     @Test
