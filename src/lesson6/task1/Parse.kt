@@ -114,7 +114,7 @@ fun isDateValid(date: Int, month: Int, year: Int): Boolean =
  */
 fun dateDigitToStr(digital: String): String {
     val str = digital.split(".")
-    if (str.size > 3) return ""
+    if (str.size != 3) return ""
     val date = str[0].toIntOrNull() ?: return ""
     val month = str[1].toIntOrNull() ?: return ""
     val year = str[2].toIntOrNull() ?: return ""
@@ -241,7 +241,7 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше либо равны нуля.
  */
 fun mostExpensive(description: String): String {
-    if (!description.matches(Regex("""^[а-яА-Я\w]+\s\d+(.\d)?((;\s[а-яА-Я\w]+\s\d+(.\d)?)+)?$""")))
+    if (!description.matches(Regex("""^[а-яА-Я\w]+\s\d+(.\d+)?((;\s[а-яА-Я\w]+\s\d+(.\d+)?)+)?$""")))
         return ""
     val a = description.split(Regex("""\s|(;\s)"""))
     val map = mutableMapOf<Double, String>()
