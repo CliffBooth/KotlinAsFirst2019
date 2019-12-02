@@ -80,7 +80,27 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val text = File(inputName).readText()
+    val letters = listOf('ж', 'ч', 'ш', 'щ')
+    for (i in 0 until text.length) {
+        if (i == 0) {
+            writer.write(text[i].toString())
+            continue
+        }
+        var char = text[i].toLowerCase()
+        if (letters.contains(text[i - 1].toLowerCase())) {
+            char = when (char) {
+                'ы' -> 'и'
+                'я' -> 'а'
+                'ю' -> 'у'
+                else -> char
+            }
+        }
+        if (text[i].isUpperCase()) char = char.toUpperCase()
+        writer.write(char.toString())
+    }
+    writer.close()
 }
 
 /**
@@ -101,7 +121,18 @@ fun sibilants(inputName: String, outputName: String) {
  *
  */
 fun centerFile(inputName: String, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val lines = File(inputName).readLines()
+    var longestLine = 0
+    for (line in lines)
+        if (line.length > longestLine)
+            longestLine = line.length
+    for (line in lines) {
+        val tr = line.trim()
+        writer.write(tr.padStart((longestLine - tr.length) / 2 + tr.length, ' '))
+        writer.newLine()
+    }
+    writer.close()
 }
 
 /**
