@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import kotlin.math.pow
 
 /**
  * Пример
@@ -184,7 +185,9 @@ fun alignFileByWidth(inputName: String, outputName: String) {
  * Ключи в ассоциативном массиве должны быть в нижнем регистре.
  *
  */
-fun top20Words(inputName: String): Map<String, Int> = TODO()
+fun top20Words(inputName: String): Map<String, Int> {
+    TODO()
+}
 
 /**
  * Средняя
@@ -222,7 +225,19 @@ fun top20Words(inputName: String): Map<String, Int> = TODO()
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: String) {
-    TODO()
+    val text = File(inputName).readText()
+    val writer = File(outputName).writer()
+    for (char in text) {
+        val letter = (dictionary.getOrDefault(
+            char.toLowerCase(),
+            dictionary.getOrDefault(char.toUpperCase(), char.toString())
+        )).toLowerCase()
+        if (char.isLowerCase())
+            writer.write(letter)
+        else
+            writer.write(letter.capitalize())
+    }
+    writer.close()
 }
 
 /**
@@ -250,7 +265,24 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
  * Обратите внимание: данная функция не имеет возвращаемого значения
  */
 fun chooseLongestChaoticWord(inputName: String, outputName: String) {
-    TODO()
+    val words = File(inputName).readLines()
+    val writer = File(outputName).writer()
+    var longestWord = 0
+    val chaoticWords = mutableListOf<String>()
+    loop@ for (word in words) {
+        for (letter in word)
+            if (word.toLowerCase().count { it.toLowerCase() == letter.toLowerCase() } > 1) continue@loop
+        chaoticWords.add(word)
+    }
+    for (word in chaoticWords)
+        if (word.length > longestWord)
+            longestWord = word.length
+    val toWrite = mutableListOf<String>()
+    for (word in chaoticWords)
+        if (word.length == longestWord)
+            toWrite.add(word)
+    writer.write(toWrite.joinToString(separator = ", "))
+    writer.close()
 }
 
 /**
@@ -443,9 +475,27 @@ fun markdownToHtml(inputName: String, outputName: String) {
  *
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val l = lhv.toString().length + rhv.toString().length
+    writer.write(
+        "${lhv.toString().padStart(l, ' ')}\n*" +
+                rhv.toString().padStart(l - 1, ' ')
+    )
+    writer.write("\n${"-".repeat(l)}")
+    var a = rhv
+    var i = 0
+    while (a > 0) {
+        if (i == 0)
+            writer.write("\n ")
+        writer.write(((a % 10) * lhv).toString().padStart(l - 1 - i, ' '))
+        a /= 10
+        i++
+        if (a != 0)
+            writer.write("\n+")
+    }
+    writer.write("\n${"-".repeat(l)}\n" + (lhv * rhv).toString().padStart(l, ' '))
+    writer.close()
 }
-
 
 /**
  * Сложная
@@ -468,6 +518,55 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
  *
  */
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
-    TODO()
+    val writer = File(outputName).bufferedWriter()
+    val s = lhv.toString()
+
+    //первая часть, до первой черты
+    writer.write(" $lhv | $rhv\n")
+    var toSubtract = divide(lhv, rhv)
+    writer.write("-$toSubtract${" ".repeat(s.length - toSubtract.toString().length + 3)}${lhv / rhv}\n")
+    writer.write("${"-".repeat(toSubtract.toString().length + 1)}\n")
+    var a = lhv
+
+    // основная часть
+    var counter = (lhv.toString().length - toSubtract.toString().length)
+    var n = "${subtract(a, toSubtract)}${(lhv / 10.0.pow(counter - 1)).toInt() % 10}"
+    while (counter > 0) {
+        writer.write(" ${n.padStart(s.length - counter + 1, ' ')}")
+        val prevLine = s.length - counter + 2
+        toSubtract = divide(n.toInt(), rhv)
+        a = n.toInt()
+        writer.write("\n${"-$toSubtract".padStart(prevLine, ' ')}")
+        writer.write("\n${"-".repeat(toSubtract.toString().length + 1).padStart(prevLine, ' ')}\n")
+        counter--
+        n = "${(a - toSubtract)}${(lhv / 10.0.pow(counter - 1)).toInt() % 10}"
+    }
+
+    //остаток
+    writer.write((lhv % rhv).toString().padStart(s.length + 1, ' '))
+    writer.close()
+}
+
+//получить разность первого вычитания (к которой потом дописать следующую цифру из первоначального числа)
+fun subtract(a: Int, toSubtract: Int): String {
+    val a1 = a.toString()
+    val r1 = toSubtract.toString()
+    var res = ""
+    for (i in 0 until r1.length)
+        res += (a1[i])
+    return (res.toInt() - toSubtract).toString()
+}
+
+// что вычитаем
+fun divide(lhv: Int, rhv: Int): Int {
+    if (lhv < rhv)
+        return 0
+    var i = 1
+    var x = 0
+    while (x < rhv) {
+        x = lhv / 10.0.pow(lhv.toString().length - i).toInt()
+        i++
+    }
+    return x - (x % rhv)
 }
 

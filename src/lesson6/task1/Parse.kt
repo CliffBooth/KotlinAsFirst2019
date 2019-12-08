@@ -173,7 +173,7 @@ fun bestLongJump(jumps: String): Int {
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    if (!jumps.matches(Regex("""^((\d+\s[+\-%]+\s)+)?\d+\s([\-%]+)?\++([\-%]+)?(\s(\d+\s[+\-%]+\s?)+)?$""")))
+    if (!jumps.matches(Regex("""^((\d+\s[+\-%]+\s)+)?\d+\s([+\-%]+)?\+([+\-%]+)?((\s\d+\s[+\-%]+)+)?$""")))
         return -1
     val a = jumps.split(" ")
     val b = mutableListOf<String>()
@@ -218,12 +218,11 @@ fun plusMinus(expression: String): Int {
  */
 fun firstDuplicateIndex(str: String): Int {
     val list = str.split(" ")
-    println(list)
     var x = 0
-    for (i in 0 until list.size) {
+    for (i in 0 until list.size - 1) {
         x += list[i].length
-        val y = list.getOrNull(i + 1) ?: return -1
-        if (list[i].toLowerCase() == y.toLowerCase())
+        val y = list.getOrNull(i + 1)
+        if (list[i].toLowerCase() == y!!.toLowerCase())
             return x - list[i].length + i
     }
     return -1
