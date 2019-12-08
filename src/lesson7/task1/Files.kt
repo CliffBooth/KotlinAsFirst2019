@@ -124,6 +124,10 @@ fun sibilants(inputName: String, outputName: String) {
 fun centerFile(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val lines = File(inputName).readLines()
+    if (lines.size == 1) {
+        writer.write(lines[0].trim())
+        writer.close()
+    }
     var longestLine = 0
     for (line in lines)
         if (line.length > longestLine)
@@ -134,6 +138,7 @@ fun centerFile(inputName: String, outputName: String) {
         writer.newLine()
     }
     writer.close()
+    println(File(outputName).readText())
 }
 
 /**
@@ -232,10 +237,10 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
             char.toLowerCase(),
             dictionary.getOrDefault(char.toUpperCase(), char.toString())
         )).toLowerCase()
-        if (char.isLowerCase())
-            writer.write(letter)
-        else
+        if (char.isUpperCase())
             writer.write(letter.capitalize())
+        else
+            writer.write(letter)
     }
     writer.close()
 }
@@ -537,7 +542,10 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         toSubtract = divide(n.toInt(), rhv)
         a = n.toInt()
         writer.write("\n${"-$toSubtract".padStart(prevLine, ' ')}")
-        writer.write("\n${"-".repeat(toSubtract.toString().length + 1).padStart(prevLine, ' ')}\n")
+        if (toSubtract.toString().length + 1 > n.length)
+            writer.write("\n${"-".repeat(toSubtract.toString().length + 1).padStart(prevLine, ' ')}\n")
+        else
+            writer.write("\n${"-".repeat(n.length).padStart(prevLine, ' ')}\n")
         counter--
         n = "${(a - toSubtract)}${(lhv / 10.0.pow(counter - 1)).toInt() % 10}"
     }
