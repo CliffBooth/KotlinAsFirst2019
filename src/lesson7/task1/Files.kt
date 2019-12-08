@@ -124,21 +124,18 @@ fun sibilants(inputName: String, outputName: String) {
 fun centerFile(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val lines = File(inputName).readLines()
-    if (lines.size == 1) {
-        writer.write(lines[0].trim())
-        writer.close()
-    }
     var longestLine = 0
     for (line in lines)
         if (line.length > longestLine)
             longestLine = line.length
+    if (lines.size == 1)
+        longestLine = lines[0].trim().length
     for (line in lines) {
         val tr = line.trim()
         writer.write(tr.padStart((longestLine - tr.length) / 2 + tr.length, ' '))
         writer.newLine()
     }
     writer.close()
-    println(File(outputName).readText())
 }
 
 /**
@@ -482,10 +479,8 @@ fun markdownToHtml(inputName: String, outputName: String) {
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val l = lhv.toString().length + rhv.toString().length
-    writer.write(
-        "${lhv.toString().padStart(l, ' ')}\n*" +
-                rhv.toString().padStart(l - 1, ' ')
-    )
+    writer.write("${lhv.toString().padStart(l, ' ')}\n*")
+    writer.write(rhv.toString().padStart(l - 1, ' '))
     writer.write("\n${"-".repeat(l)}")
     var a = rhv
     var i = 0
