@@ -476,9 +476,7 @@ fun markdownToHtml(inputName: String, outputName: String) {
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    var l = lhv.toString().length + rhv.toString().length
-    if ((lhv.toString().length == rhv.toString().length) && (l != 2))
-        l++
+    val l = (lhv * rhv).toString().length + 1
     writer.write("${lhv.toString().padStart(l, ' ')}\n*")
     writer.write(rhv.toString().padStart(l - 1, ' '))
     writer.write("\n${"-".repeat(l)}")
@@ -522,9 +520,10 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val s = lhv.toString()
     if ((lhv / rhv < 10) && s.length > 1) {
         val d = divide(lhv, rhv)
-        writer.write("$lhv | $rhv\n")
-        writer.write("${"-$d".padStart(s.length, ' ')}   ${lhv / rhv}\n")
-        writer.write("-".repeat(s.length) + "\n${(lhv - d).toString().padStart(s.length,' ')}")
+        writer.write("${"$lhv".padStart("-$d".length,' ')} | $rhv")
+        val l = "$lhv".padStart("-$d".length,' ').length                         //длина lhv с пробелом или без
+        writer.write("\n${"-$d".padStart(s.length, ' ')}   ${lhv / rhv}\n")
+        writer.write("-".repeat(l) + "\n${(lhv - d).toString().padStart(l,' ')}")
         writer.close()
     } else {
 
@@ -558,6 +557,7 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         writer.write((lhv % rhv).toString().padStart(s.length + 1, ' '))
         writer.close()
     }
+    println("\n\n${File(outputName).readText()}")
 }
 
 //получить разность первого вычитания (к которой потом дописать следующую цифру из первоначального числа)
