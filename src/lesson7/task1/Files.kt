@@ -81,27 +81,28 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
  *
  */
 fun sibilants(inputName: String, outputName: String) {
-    val writer = File(outputName).bufferedWriter()
-    val text = File(inputName).readText()
-    val letters = listOf('ж', 'ч', 'ш', 'щ')
-    for (i in 0 until text.length) {
-        if (i == 0) {
-            writer.write(text[i].toString())
-            continue
-        }
-        var char = text[i].toLowerCase()
-        if (letters.contains(text[i - 1].toLowerCase())) {
-            char = when (char) {
-                'ы' -> 'и'
-                'я' -> 'а'
-                'ю' -> 'у'
-                else -> char
+    File(outputName).bufferedWriter().use {
+        val text = File(inputName).readText()
+        val letters = listOf('ж', 'ч', 'ш', 'щ')
+        for (i in 0 until text.length) {
+            if (i == 0) {
+                it.write(text[i].toString())
+                continue
             }
+            var char = text[i].toLowerCase()
+            if (letters.contains(text[i - 1].toLowerCase())) {
+                char = when (char) {
+                    'ы' -> 'и'
+                    'я' -> 'а'
+                    'ю' -> 'у'
+                    else -> char
+                }
+            }
+            if (text[i].isUpperCase())
+                char = char.toUpperCase()
+            it.write(char.toString())
         }
-        if (text[i].isUpperCase()) char = char.toUpperCase()
-        writer.write(char.toString())
     }
-    writer.close()
 }
 
 /**
@@ -123,7 +124,7 @@ fun sibilants(inputName: String, outputName: String) {
  */
 fun centerFile(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    val lines = File(inputName).readLines().map{ it.trim() }
+    val lines = File(inputName).readLines().map { it.trim() }
     var longestLine = 0
     for (line in lines)
         if (line.length > longestLine)
@@ -476,23 +477,23 @@ fun markdownToHtml(inputName: String, outputName: String) {
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     var l = lhv.toString().length + rhv.toString().length
-    if (lhv.toString().length == rhv.toString().length)
+    if ((lhv.toString().length == rhv.toString().length) && (l != 2))
         l++
-    writer.write("${lhv.toString().padStart(l,' ')}\n*")
-    writer.write(rhv.toString().padStart(l - 1,' '))
+    writer.write("${lhv.toString().padStart(l, ' ')}\n*")
+    writer.write(rhv.toString().padStart(l - 1, ' '))
     writer.write("\n${"-".repeat(l)}")
     var a = rhv
     var i = 0
     while (a > 0) {
         if (i == 0)
             writer.write("\n ")
-        writer.write(((a % 10) * lhv).toString().padStart(l - 1 - i,' '))
+        writer.write(((a % 10) * lhv).toString().padStart(l - 1 - i, ' '))
         a /= 10
         i++
         if (a != 0)
             writer.write("\n+")
     }
-    writer.write("\n${"-".repeat(l)}\n" + (lhv * rhv).toString().padStart(l,' '))
+    writer.write("\n${"-".repeat(l)}\n" + (lhv * rhv).toString().padStart(l, ' '))
     writer.close()
 }
 
@@ -519,10 +520,11 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val s = lhv.toString()
-    if ((lhv < rhv) && s.length > 1) {
+    if ((lhv / rhv < 10) && s.length > 1) {
+        val d = divide(lhv, rhv)
         writer.write("$lhv | $rhv\n")
-        writer.write("${"-0".padStart(s.length, ' ')}   ${lhv / rhv}\n")
-        writer.write("-".repeat(s.length) + "\n$lhv")
+        writer.write("${"-$d".padStart(s.length, ' ')}   ${lhv / rhv}\n")
+        writer.write("-".repeat(s.length) + "\n${(lhv - d).toString().padStart(s.length,' ')}")
         writer.close()
     } else {
 
