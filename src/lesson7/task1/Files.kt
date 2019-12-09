@@ -123,16 +123,13 @@ fun sibilants(inputName: String, outputName: String) {
  */
 fun centerFile(inputName: String, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    val lines = File(inputName).readLines()
+    val lines = File(inputName).readLines().map{ it.trim() }
     var longestLine = 0
     for (line in lines)
         if (line.length > longestLine)
             longestLine = line.length
-    if (lines.size == 1)
-        longestLine = lines[0].trim().length
     for (line in lines) {
-        val tr = line.trim()
-        writer.write(tr.padStart((longestLine - tr.length) / 2 + tr.length, ' '))
+        writer.write(line.padStart((longestLine - line.length) / 2 + line.length, ' '))
         writer.newLine()
     }
     writer.close()
@@ -478,22 +475,24 @@ fun markdownToHtml(inputName: String, outputName: String) {
  */
 fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
     val writer = File(outputName).bufferedWriter()
-    val l = lhv.toString().length + rhv.toString().length
-    writer.write("${lhv.toString().padStart(l, ' ')}\n*")
-    writer.write(rhv.toString().padStart(l - 1, ' '))
+    var l = lhv.toString().length + rhv.toString().length
+    if (lhv.toString().length == rhv.toString().length)
+        l++
+    writer.write("${lhv.toString().padStart(l,' ')}\n*")
+    writer.write(rhv.toString().padStart(l - 1,' '))
     writer.write("\n${"-".repeat(l)}")
     var a = rhv
     var i = 0
     while (a > 0) {
         if (i == 0)
             writer.write("\n ")
-        writer.write(((a % 10) * lhv).toString().padStart(l - 1 - i, ' '))
+        writer.write(((a % 10) * lhv).toString().padStart(l - 1 - i,' '))
         a /= 10
         i++
         if (a != 0)
             writer.write("\n+")
     }
-    writer.write("\n${"-".repeat(l)}\n" + (lhv * rhv).toString().padStart(l, ' '))
+    writer.write("\n${"-".repeat(l)}\n" + (lhv * rhv).toString().padStart(l,' '))
     writer.close()
 }
 
@@ -520,34 +519,43 @@ fun printMultiplicationProcess(lhv: Int, rhv: Int, outputName: String) {
 fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val writer = File(outputName).bufferedWriter()
     val s = lhv.toString()
+    if ((lhv < rhv) && s.length > 1) {
+        writer.write("$lhv | $rhv\n")
+        writer.write("${"-0".padStart(s.length, ' ')}   ${lhv / rhv}\n")
+        writer.write("-".repeat(s.length) + "\n$lhv")
+        writer.close()
+    } else {
 
-    //первая часть, до первой черты
-    writer.write(" $lhv | $rhv\n")
-    var toSubtract = divide(lhv, rhv)
-    writer.write("-$toSubtract${" ".repeat(s.length - toSubtract.toString().length + 3)}${lhv / rhv}\n")
-    writer.write("${"-".repeat(toSubtract.toString().length + 1)}\n")
-    var a = lhv
+        //первая часть, до первой черты
+        writer.write(" $lhv | $rhv\n")
+        var toSubtract = divide(lhv, rhv)
+        writer.write("-$toSubtract${" ".repeat(s.length - toSubtract.toString().length + 3)}${lhv / rhv}\n")
+        writer.write("${"-".repeat(toSubtract.toString().length + 1)}\n")
+        var a = lhv
 
-    // основная часть
-    var counter = (lhv.toString().length - toSubtract.toString().length)
-    var n = "${subtract(a, toSubtract)}${(lhv / 10.0.pow(counter - 1)).toInt() % 10}"
-    while (counter > 0) {
-        writer.write(" ${n.padStart(s.length - counter + 1, ' ')}")
-        val prevLine = s.length - counter + 2
-        toSubtract = divide(n.toInt(), rhv)
-        a = n.toInt()
-        writer.write("\n${"-$toSubtract".padStart(prevLine, ' ')}")
-        if (toSubtract.toString().length + 1 > n.length)
-            writer.write("\n${"-".repeat(toSubtract.toString().length + 1).padStart(prevLine, ' ')}\n")
-        else
-            writer.write("\n${"-".repeat(n.length).padStart(prevLine, ' ')}\n")
-        counter--
-        n = "${(a - toSubtract)}${(lhv / 10.0.pow(counter - 1)).toInt() % 10}"
+        // основная часть
+        var counter = (lhv.toString().length - toSubtract.toString().length)
+        var n = "${subtract(a, toSubtract)}${(lhv / 10.0.pow(counter - 1)).toInt() % 10}"
+        while (counter > 0) {
+            writer.write(" ${n.padStart(s.length - counter + 1, ' ')}")
+            val prevLine = s.length - counter + 2
+            toSubtract = divide(n.toInt(), rhv)
+            a = n.toInt()
+            writer.write("\n${"-$toSubtract".padStart(prevLine, ' ')}")
+            if (toSubtract.toString().length + 1 > n.length)
+                writer.write(
+                    "\n${"-".repeat(toSubtract.toString().length + 1).padStart(prevLine, ' ')}\n"
+                )
+            else
+                writer.write("\n${"-".repeat(n.length).padStart(prevLine, ' ')}\n")
+            counter--
+            n = "${(a - toSubtract)}${(lhv / 10.0.pow(counter - 1)).toInt() % 10}"
+        }
+
+        //остаток
+        writer.write((lhv % rhv).toString().padStart(s.length + 1, ' '))
+        writer.close()
     }
-
-    //остаток
-    writer.write((lhv % rhv).toString().padStart(s.length + 1, ' '))
-    writer.close()
 }
 
 //получить разность первого вычитания (к которой потом дописать следующую цифру из первоначального числа)

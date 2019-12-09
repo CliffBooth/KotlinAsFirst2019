@@ -322,6 +322,11 @@ Basic, Ruby, Swift.
             assertFileContent("temp.txt", res.trimIndent())
             File("temp.txt").delete()
         }
+        test(
+            44333,
+            40135,
+            "      44333\n*     40135\n-----------\n     221665\n+   132999\n+   44333\n+      0\n+177332\n-----------\n 1779304955"
+        )
 
         test(
             19935,
@@ -375,6 +380,11 @@ Basic, Ruby, Swift.
             assertFileContent("temp.txt", res.trimIndent())
             File("temp.txt").delete()
         }
+        test(
+            21821,
+            23225,
+            "21821 | 23225\n   -0   0\n-----\n21821"
+        )
 
         test(
             19935,
