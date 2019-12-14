@@ -83,21 +83,16 @@ fun countSubstrings(inputName: String, substrings: List<String>): Map<String, In
 fun sibilants(inputName: String, outputName: String) {
     File(outputName).bufferedWriter().use {
         val text = File(inputName).readText()
-        val letters = listOf('ж', 'ч', 'ш', 'щ')
-        for (i in 0 until text.length) {
+        val letters = setOf('ж', 'ч', 'ш', 'щ')
+        val map = mapOf('ы' to 'и', 'я' to 'а', 'ю' to 'у')
+        for (i in text.indices) {
             if (i == 0) {
                 it.write(text[i].toString())
                 continue
             }
             var char = text[i].toLowerCase()
-            if (letters.contains(text[i - 1].toLowerCase())) {
-                char = when (char) {
-                    'ы' -> 'и'
-                    'я' -> 'а'
-                    'ю' -> 'у'
-                    else -> char
-                }
-            }
+            if (letters.contains(text[i - 1].toLowerCase()) && map.keys.contains(char))
+                char = map[char]!!
             if (text[i].isUpperCase())
                 char = char.toUpperCase()
             it.write(char.toString())
@@ -269,9 +264,12 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
     val writer = File(outputName).writer()
     var longestWord = 0
     val chaoticWords = mutableListOf<String>()
-    loop@ for (word in words) {
+    var switch = true
+    for (word in words) {
         for (letter in word)
-            if (word.toLowerCase().count { it.toLowerCase() == letter.toLowerCase() } > 1) continue@loop
+            if (word.toLowerCase().count { it.toLowerCase() == letter.toLowerCase() } > 1)
+                switch = false
+        if (switch)
         chaoticWords.add(word)
     }
     for (word in chaoticWords)
@@ -520,10 +518,10 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     val s = lhv.toString()
     if ((lhv / rhv < 10) && s.length > 1) {
         val d = divide(lhv, rhv)
-        writer.write("${"$lhv".padStart("-$d".length,' ')} | $rhv")
-        val l = "$lhv".padStart("-$d".length,' ').length                         //длина lhv с пробелом или без
+        writer.write("${"$lhv".padStart("-$d".length, ' ')} | $rhv")
+        val l = "$lhv".padStart("-$d".length, ' ').length                         //длина lhv с пробелом или без
         writer.write("\n${"-$d".padStart(s.length, ' ')}   ${lhv / rhv}\n")
-        writer.write("-".repeat(l) + "\n${(lhv - d).toString().padStart(l,' ')}")
+        writer.write("-".repeat(l) + "\n${(lhv - d).toString().padStart(l, ' ')}")
         writer.close()
     } else {
 
@@ -557,7 +555,6 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
         writer.write((lhv % rhv).toString().padStart(s.length + 1, ' '))
         writer.close()
     }
-    println("\n\n${File(outputName).readText()}")
 }
 
 //получить разность первого вычитания (к которой потом дописать следующую цифру из первоначального числа)

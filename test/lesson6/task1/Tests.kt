@@ -89,6 +89,7 @@ class Tests {
         assertEquals(-1, bestHighJump("???"))
         assertEquals(230, bestHighJump("220 + 224 %+ 228 %- 230 + 232 %%- 234 %"))
         assertEquals(-1, bestHighJump("220 -% 224 % 228 %- 211  -% 232 %%- 234 %+"))
+        assertEquals(-1, bestHighJump("444 + 5556 %+666 -"))
     }
 
     @Test

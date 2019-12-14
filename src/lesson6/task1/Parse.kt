@@ -173,7 +173,7 @@ fun bestLongJump(jumps: String): Int {
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    if (!jumps.matches(Regex("""^((\d+\s[+\-%]+\s)+)?\d+\s([+\-%]+)?\+([+\-%]+)?((\s\d+\s[+\-%]+)+)?$""")))
+    if (!jumps.matches(Regex("""^(\d+\s[+\-%]+\s)*\d+\s[+\-%]*\+[+\-%]*(\s\d+\s[+\-%]+)*$""")))
         return -1
     val a = jumps.split(" ")
     val b = mutableListOf<String>()
@@ -194,7 +194,7 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
-    require(expression.matches(Regex("""^\d+((\s[+\-]\s\d+)+)?$""")))
+    require(expression.matches(Regex("""^\d+(\s[+\-]\s\d+)*$""")))
     val a = expression.split(" ")
     var add = 0
     var subtract = 0
@@ -221,8 +221,8 @@ fun firstDuplicateIndex(str: String): Int {
     var x = 0
     for (i in 0 until list.size - 1) {
         x += list[i].length
-        val y = list.getOrNull(i + 1)
-        if (list[i].toLowerCase() == y!!.toLowerCase())
+        val y = list[i + 1]
+        if (list[i].toLowerCase() == y.toLowerCase())
             return x - list[i].length + i
     }
     return -1
@@ -240,7 +240,7 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше либо равны нуля.
  */
 fun mostExpensive(description: String): String {
-    if (!description.matches(Regex("""^[.\S]+\s\d+(\.\d+)?((;\s[.\S]+\s\d+(\.\d+)?)+)?$""")))
+    if (!description.matches(Regex("""^[\S]+\s\d+(\.\d+)?(;\s[\S]+\s\d+(\.\d+)?)*$""")))
         return ""
     val a = description.split(Regex("""\s|(;\s)"""))
     val map = mutableMapOf<Double, String>()
@@ -264,7 +264,7 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
-    if (!roman.matches(Regex("""^[IVXLCDM]+$""")))
+    if (!roman.matches(Regex("""^M*(C[MD]|D?C{0,3})?(X[CL]|L?X{0,3})?(I[VX]|V?I{0,3})?$""")))
         return -1
     val a = roman.split("")
     var answer = 0
