@@ -173,7 +173,7 @@ class Line private constructor(val b: Double, val angle: Double) {
  * Построить прямую по отрезку
  */
 fun lineBySegment(s: Segment): Line {
-    val angle = asin((s.end.y - s.begin.y) / s.begin.distance(s.end))
+    val angle = atan((s.end.y - s.begin.y) / (s.end.x - s.begin.x))
     return Line(Point(s.begin.x, s.begin.y), angle)
 }
 
@@ -182,7 +182,7 @@ fun lineBySegment(s: Segment): Line {
  *
  * Построить прямую по двум точкам
  */
-fun lineByPoints(a: Point, b: Point): Line = Line(a, asin((b.y - a.y) / a.distance(b)))
+fun lineByPoints(a: Point, b: Point): Line = Line(a,atan((b.y - a.y) / (b.x - a.x)))
 
 /**
  * Сложная
@@ -191,7 +191,8 @@ fun lineByPoints(a: Point, b: Point): Line = Line(a, asin((b.y - a.y) / a.distan
  */
 fun bisectorByPoints(a: Point, b: Point): Line {
     val point = Point((a.x + b.x) / 2, (a.y + b.y) / 2)
-    return Line(point, PI / 2)
+    val angle = PI / 2 + atan((b.y - a.y) / (b.x - a.x))
+    return Line(point, angle)
 }
 
 /**
@@ -221,10 +222,10 @@ fun findNearestCirclePair(vararg circles: Circle): Pair<Circle, Circle> {
  * построить окружность, описанную вокруг треугольника - эквивалентная задача).
  */
 fun circleByThreePoints(a: Point, b: Point, c: Point): Circle {
-    val line1 = lineBySegment(Segment(a, b))
-    val line2 = lineBySegment(Segment(a, c))
+    val line1 = bisectorByPoints(a, b)
+    val line2 = bisectorByPoints(a, c)
     val point = line1.crossPoint(line2)
-    return Circle(point, point.distance(a) / 2)
+    return Circle(point, point.distance(a))
 }
 
 /**

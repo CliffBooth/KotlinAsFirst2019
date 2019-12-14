@@ -264,7 +264,7 @@ fun mostExpensive(description: String): String {
  * Вернуть -1, если roman не является корректным римским числом
  */
 fun fromRoman(roman: String): Int {
-    if (!roman.matches(Regex("""^M*(C[MD]|D?C{0,3})?(X[CL]|L?X{0,3})?(I[VX]|V?I{0,3})?$""")))
+    if (!roman.matches(Regex("""^M*(C[MD]|D?C{0,3})(X[CL]|L?X{0,3})(I[VX]|V?I{0,3})$""")) || roman.isEmpty())
         return -1
     val a = roman.split("")
     var answer = 0

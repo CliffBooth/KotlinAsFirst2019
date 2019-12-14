@@ -270,7 +270,8 @@ fun chooseLongestChaoticWord(inputName: String, outputName: String) {
             if (word.toLowerCase().count { it.toLowerCase() == letter.toLowerCase() } > 1)
                 switch = false
         if (switch)
-        chaoticWords.add(word)
+            chaoticWords.add(word)
+        switch = true
     }
     for (word in chaoticWords)
         if (word.length > longestWord)
