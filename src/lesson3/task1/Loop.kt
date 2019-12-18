@@ -86,7 +86,7 @@ fun digitNumber(n: Int): Int {
  */
 fun fib(n: Int): Int {
     var y = 3
-    var x1 = 1
+    var x1: Int
     var x2 = 1
     var x3 = 2
     if ((n == 1) || (n == 2)) return 1
@@ -227,7 +227,7 @@ fun revert(n: Int): Int {
     var x = n
     var answer = 0
     var b = 0
-    var y = 0.0
+    var y: Double
     val c = digitNumber(n)
     while (x > 0) {
         y = (c - 1 - b).toDouble()
@@ -279,7 +279,17 @@ fun hasDifferentDigits(n: Int): Boolean {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var counter = 0
+    var f = 1
+    var number = 0
+    while (counter < n) {
+        number = f * f
+        counter += digitNumber(number)
+        f++
+    }
+    return (number / 10.0.pow(counter - n) % 10).toInt()
+}
 
 /**
  * Сложная
@@ -290,4 +300,14 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var counter = 0
+    var f = 1
+    var number = 0
+    while (counter < n) {
+        number = fib(f)
+        counter += digitNumber(number)
+        f++
+    }
+    return (number / 10.0.pow(counter - n) % 10).toInt()
+}

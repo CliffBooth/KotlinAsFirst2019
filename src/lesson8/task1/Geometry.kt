@@ -4,6 +4,7 @@ package lesson8.task1
 
 import lesson1.task1.sqr
 import java.awt.geom.Point2D.distance
+import java.lang.Exception
 import kotlin.math.*
 
 /**
@@ -110,11 +111,11 @@ data class Segment(val begin: Point, val end: Point) {
  * Если в множестве менее двух точек, бросить IllegalArgumentException
  */
 fun diameter(vararg points: Point): Segment {
-    if (points.size < 2) throw IllegalArgumentException()
+    require(points.size >= 2)
     var result = Segment(Point(0.0, 0.0), Point(0.0, 0.0))
     for (i in points.indices) {
         for (n in i + 1 until points.size)
-            if (points[i].distance(points[n]) > result.begin.distance(result.end))
+            if (points[i].distance(points[n]) >= result.begin.distance(result.end))
                 result = Segment(points[i], points[n])
     }
     return result
@@ -151,8 +152,9 @@ class Line private constructor(val b: Double, val angle: Double) {
      * Для этого необходимо составить и решить систему из двух уравнений (каждое для своей прямой)
      */
     fun crossPoint(other: Line): Point {
-        val x = (other.b - b * cos(other.angle) / cos(angle)) / (tan(angle) * cos(other.angle) - sin(other.angle))
-        val y = x * tan(other.angle) + other.b / cos(other.angle)
+        require(angle != other.angle)
+        val x = (other.b * cos(angle) - b * cos(other.angle)) / sin(angle - other.angle)
+        val y = (b * sin(other.angle) - other.b * sin(angle)) / sin(other.angle - angle)
         return Point(x, y)
     }
 
@@ -172,17 +174,14 @@ class Line private constructor(val b: Double, val angle: Double) {
  *
  * Построить прямую по отрезку
  */
-fun lineBySegment(s: Segment): Line {
-    val angle = (PI * 2 + atan((s.end.y - s.begin.y) / (s.end.x - s.begin.x))) % PI
-    return Line(Point(s.begin.x, s.begin.y), angle)
-}
+fun lineBySegment(s: Segment): Line = lineByPoints(s.begin, s.end)
 
 /**
  * Средняя
  *
  * Построить прямую по двум точкам
  */
-fun lineByPoints(a: Point, b: Point): Line = Line(a, (PI * 2 + atan((b.y - a.y) / (b.x - a.x))) % PI)
+fun lineByPoints(a: Point, b: Point): Line = Line(a, PI + (atan((b.y - a.y) / (b.x - a.x))) % PI)
 
 /**
  * Сложная
@@ -191,7 +190,7 @@ fun lineByPoints(a: Point, b: Point): Line = Line(a, (PI * 2 + atan((b.y - a.y) 
  */
 fun bisectorByPoints(a: Point, b: Point): Line {
     val point = Point((a.x + b.x) / 2, (a.y + b.y) / 2)
-    val angle = (PI / 2 + atan((b.y - a.y) / (b.x - a.x))) % PI
+    val angle = (atan( -(b.x - a.x) / (b.y - a.y)) + PI) % PI
     return Line(point, angle)
 }
 
