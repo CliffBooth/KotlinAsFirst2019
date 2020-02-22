@@ -324,3 +324,34 @@ fun fromRoman(roman: String): Int {
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+
+fun calculator(input: String): Double {
+    require(input.matches(Regex("""^\d+(.\d+)*( [/+\-*] \d+(.\d+)*)*$""")))
+    var list = input.split(" ").toMutableList()
+    if (list.contains("*"))
+        list = calculate(list, "*")
+    if (list.contains("/"))
+        list = calculate(list, "/")
+    var result = list[0].toDouble()
+    for (i in 1 until list.size step 2) {
+        when (list[i]) {
+            "+" -> result += list[i + 1].toDouble()
+            "-" -> result -= list[i + 1].toDouble()
+        }
+    }
+    return result
+}
+
+fun calculate(list: MutableList<String>, s: String): MutableList<String> {
+    var m: Double
+    while (list.contains(s)) {
+        m = if (s == "*")
+            list[list.indexOf(s) - 1].toDouble() * list[list.indexOf(s) + 1].toDouble()
+        else
+            list[list.indexOf(s) - 1].toDouble() / list[list.indexOf(s) + 1].toDouble()
+        list[list.indexOf(s) - 1] = m.toString()
+        list.removeAt(list.indexOf(s) + 1)
+        list.removeAt(list.indexOf(s))
+    }
+    return list
+}

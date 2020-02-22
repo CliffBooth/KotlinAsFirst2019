@@ -157,4 +157,13 @@ class Tests {
         assertThrows(IllegalArgumentException::class.java) { computeDeviceCells(10, "+>+>[+>", 3) }
         assertThrows(IllegalStateException::class.java) { computeDeviceCells(20, ">>>>>>>>>>>>>", 12) }
     }
+    @Test
+    fun calculator() {
+        assertEquals(5.0, calculator("5 * 7 - 30 + 20 * 5 / 5 - 20"))
+        assertEquals(0.1875, calculator("1.25 * 4 * 3.5 / 8 - 8 / 4"))
+        assertEquals(1.0, calculator("3 - 2"))
+        assertEquals(1.0, calculator("1"))
+        assertThrows(IllegalArgumentException::class.java) { calculator(" 5 ? 5 ") }
+        assertThrows(IllegalArgumentException::class.java) { calculator(" 5 5 3.25 + 6.25") }
+    }
 }

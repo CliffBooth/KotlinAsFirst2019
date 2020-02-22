@@ -60,7 +60,37 @@ operator fun Matrix<Int>.plus(other: Matrix<Int>): Matrix<Int> {
  * 10 11 12  5
  *  9  8  7  6
  */
-fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateSpiral(height: Int, width: Int): Matrix<Int> {
+    val result = createMatrix(height, width, 0)
+    var i = 1
+    var n = 1
+    while (i <= height * width) {
+        for (column in n - 1..width - n) {
+            result[n - 1, column] = i
+            i++
+        }
+        if (i > height * width) break
+
+        for (row in n..height - n) {
+            result[row, width - n] = i
+            i++
+        }
+        if (i > height * width) break
+
+        for (column in width - 1 - n downTo n - 1) {
+            result[height - n, column] = i
+            i++
+        }
+        if (i > height * width) break
+
+        for (row in height - 1 - n downTo n) {
+            result[row, n - 1] = i
+            i++
+        }
+        n++
+    }
+    return result
+}
 
 /**
  * Сложная
@@ -76,7 +106,34 @@ fun generateSpiral(height: Int, width: Int): Matrix<Int> = TODO()
  *  1  2  2  2  2  1
  *  1  1  1  1  1  1
  */
-fun generateRectangles(height: Int, width: Int): Matrix<Int> = TODO()
+fun generateRectangles(height: Int, width: Int): Matrix<Int> {
+    val result = createMatrix(height, width, 0)
+    var i = 1
+    var n = 1
+    while (i <= height * width) {
+        for (column in n - 1..width - n) {
+            result[n - 1, column] = i
+        }
+        if (i > height * width) break
+
+        for (row in n..height - n) {
+            result[row, width - n] = i
+        }
+        if (i > height * width) break
+
+        for (column in width - 1 - n downTo n - 1) {
+            result[height - n, column] = i
+        }
+        if (i > height * width) break
+
+        for (row in height - 1 - n downTo n) {
+            result[row, n - 1] = i
+        }
+        n++
+        i++
+    }
+    return result
+}
 
 /**
  * Сложная
@@ -104,7 +161,21 @@ fun generateSnake(height: Int, width: Int): Matrix<Int> = TODO()
  * 4 5 6      8 5 2
  * 7 8 9      9 6 3
  */
-fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
+fun <E> rotate(matrix: Matrix<E>): Matrix<E> {
+    require(matrix.width == matrix.height)
+    var x = 0
+    var y = 0
+    val r = createMatrix(matrix.width, matrix.height, matrix[0, 0])
+    for (column in r.width - 1 downTo 0) {
+        for (row in 0 until r.height) {
+            r[row, column] = matrix[x, y]
+            y++
+        }
+        y = 0
+        x++
+    }
+    return r
+}
 
 /**
  * Сложная
@@ -119,7 +190,36 @@ fun <E> rotate(matrix: Matrix<E>): Matrix<E> = TODO()
  * 1 2 3
  * 3 1 2
  */
-fun isLatinSquare(matrix: Matrix<Int>): Boolean = TODO()
+fun isLatinSquare(matrix: Matrix<Int>): Boolean {
+    if (matrix.height != matrix.width) return false
+    val list = mutableListOf<Int>()
+    val set = mutableSetOf<Int>()
+
+    for (i in 1..matrix.width)
+        set.add(i)
+
+    for (r in 0 until matrix.height) {
+        for (c in 0 until matrix.width) {
+            list.add(matrix[r, c])
+        }
+        for (element in list) {
+            if (!list.containsAll(set))
+                return false
+        }
+        list.clear()
+    }
+    for (c in 0 until matrix.width) {
+        for (r in 0 until matrix.height) {
+            list.add(matrix[r, c])
+        }
+        for (element in list) {
+            if (!list.containsAll(set))
+                return false
+        }
+        list.clear()
+    }
+    return true
+}
 
 /**
  * Средняя
