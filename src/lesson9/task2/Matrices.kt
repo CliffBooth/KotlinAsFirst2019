@@ -3,7 +3,9 @@
 package lesson9.task2
 
 import lesson9.task1.Matrix
+import lesson9.task1.MatrixImpl
 import lesson9.task1.createMatrix
+import java.lang.IllegalArgumentException
 
 // Все задачи в этом файле требуют наличия реализации интерфейса "Матрица" в Matrix.kt
 
@@ -238,7 +240,33 @@ fun isLatinSquare(matrix: Matrix<Int>): Boolean {
  *
  * 42 ===> 0
  */
-fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> = TODO()
+fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> {
+    val result = createMatrix(matrix.height, matrix.width, 0)
+    var s = 0
+    for (r in 0 until matrix.height) {
+        for (c in 0 until matrix.width) {
+            if (r + 1 < result.height)
+                s += matrix[r + 1, c]
+            if (c + 1 < result.width)
+                s += matrix[r, c + 1]
+            if (r - 1 >= 0)
+                s += matrix[r - 1, c]
+            if (c - 1 >= 0)
+                s += matrix[r, c - 1]
+            if (r + 1 < result.height && c + 1 < result.width)
+                s += matrix[r + 1, c + 1]
+            if (r - 1 >= 0 && c + 1 < result.width)
+                s += matrix[r - 1, c + 1]
+            if (r - 1 >= 0 && c - 1 >= 0)
+                s += matrix[r - 1, c - 1]
+            if (r + 1 < result.height && c - 1 >= 0)
+                s += matrix[r + 1, c - 1]
+            result[r, c] = s
+            s = 0
+        }
+    }
+    return result
+}
 
 /**
  * Средняя
@@ -255,7 +283,28 @@ fun sumNeighbours(matrix: Matrix<Int>): Matrix<Int> = TODO()
  * 0 0 1 0
  * 0 0 0 0
  */
-fun findHoles(matrix: Matrix<Int>): Holes = TODO()
+fun findHoles(matrix: Matrix<Int>): Holes {
+    val list = mutableListOf<Int>()
+    val rows = mutableListOf<Int>()
+    val columns = mutableListOf<Int>()
+    for (r in 0 until matrix.height) {
+        for (c in 0 until matrix.width) {
+            list.add(matrix[r, c])
+        }
+        if (list.count { it == 0 } == matrix.width)
+            rows.add(r)
+        list.clear()
+    }
+    for (c in 0 until matrix.width) {
+        for (r in 0 until matrix.height) {
+            list.add(matrix[r, c])
+        }
+        if (list.count { it == 0 } == matrix.height)
+            columns.add(c)
+        list.clear()
+    }
+    return Holes(rows, columns)
+}
 
 /**
  * Класс для описания местонахождения "дырок" в матрице
