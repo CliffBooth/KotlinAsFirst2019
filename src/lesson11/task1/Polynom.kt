@@ -26,7 +26,7 @@ class Polynom(vararg coeffs: Double) {
 
     private var list = listOf<Double>() //хранит коэфициенты у икса в степени, соответсвующей индексу
 
-    //чтобы не было ошибки о пустом полиноме при непустом списке, вторичный конструктор использует первичный с непустыми коэфициентами
+    //чтобы не было исключения о пустом полиноме при непустом списке, вторичный конструктор использует первичный с непустыми коэфициентами
     private constructor (l: List<Double>) : this(1.0) {
         if (l.isEmpty()) throw IllegalArgumentException("пустой полином")
         val list2 = mutableListOf<Double>()
