@@ -26,27 +26,15 @@ class Polynom(vararg coeffs: Double) {
 
     private var list = listOf<Double>() //хранит коэфициенты у икса в степени, соответсвующей индексу
 
-    //чтобы не было исключения о пустом полиноме при непустом списке, вторичный конструктор использует первичный с непустыми коэфициентами
-    private constructor (l: List<Double>) : this(1.0) {
-        if (l.isEmpty()) throw IllegalArgumentException("пустой полином")
-        val list2 = mutableListOf<Double>()
-        for (element in l)
-            list2.add(element)
-        while (list2.last() == 0.0 && list2.size > 1) {
-            list2.removeAt(list2.size - 1)
-        }
-        list = list2
-    }
+    private constructor (l: List<Double>) : this(*l.reversed().toDoubleArray())
 
     init {
         if (coeffs.isEmpty()) throw IllegalArgumentException("пустой полином")
         val list3 = mutableListOf<Double>()
-        for (c in coeffs) {
+        for (c in coeffs)
             list3.add(c)
-        }
-        while (list3.first() == 0.0 && list3.size > 1) {
+        while (list3.first() == 0.0 && list3.size > 1)
             list3.removeAt(0)
-        }
         list = list3.reversed()
     }
 
@@ -61,9 +49,8 @@ class Polynom(vararg coeffs: Double) {
      */
     fun getValue(x: Double): Double {
         var sum = 0.0
-        for (i in list.indices) {
+        for (i in list.indices)
             sum += x.pow(i) * coeff(i)
-        }
         return sum
     }
 
@@ -82,9 +69,8 @@ class Polynom(vararg coeffs: Double) {
     operator fun plus(other: Polynom): Polynom {
         val res = if (list.size > other.list.size) list.toMutableList() else other.list.toMutableList()
         val smallerList = if (list.size <= other.list.size) list else other.list
-        for (i in smallerList.indices) {
+        for (i in smallerList.indices)
             res[i] += smallerList[i]
-        }
         return Polynom(res)
     }
 
@@ -93,9 +79,8 @@ class Polynom(vararg coeffs: Double) {
      */
     operator fun unaryMinus(): Polynom {
         val res = mutableListOf<Double>()
-        for (i in list.indices) {
+        for (i in list.indices)
             res += -list[i]
-        }
         return Polynom(res)
     }
 
@@ -108,7 +93,8 @@ class Polynom(vararg coeffs: Double) {
      * Умножение
      */
     operator fun times(other: Polynom): Polynom {
-        val map = mutableMapOf<Int, Double>() //полином в виде карты, где key = степень икса value = коэфициент перед иксом
+        //полином в виде карты, где key = степень икса value = коэфициент перед иксом
+        val map = mutableMapOf<Int, Double>()
         for (i in list.indices) {
             for (j in other.list.indices)
                 map[i + j] = map.getOrDefault(i + j, 0.0) + list[i] * other.list[j]
@@ -149,18 +135,7 @@ class Polynom(vararg coeffs: Double) {
     /**
      * Взятие остатка
      */
-    operator fun rem(other: Polynom): Polynom {
-        require(other.list != listOf(0.0))
-        if (other.list.size > list.size)
-            return (this)
-        var dividend = this
-        while (dividend.degree() >= other.degree() && dividend != Polynom(0.0)) {
-            val s = mutableMapOf<Int, Double>()
-            s[dividend.degree() - other.degree()] = dividend.list.last() / other.list.last()
-            dividend -= (mapToPolynom(s) * other)
-        }
-        return dividend
-    }
+    operator fun rem(other: Polynom): Polynom = this - other * (this / other)
 
     /**
      * Сравнение на равенство

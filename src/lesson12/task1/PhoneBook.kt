@@ -18,10 +18,12 @@ package lesson12.task1
  * Класс должен иметь конструктор по умолчанию (без параметров).
  */
 class PhoneBook {
-    private val entries = mutableSetOf<Person>()
+    private val entries = mutableMapOf<String, Person>()
 
-    private val namePattern = Regex("""^[A-ZА-Я][а-яa-z]* [A-ZА-Я][а-яa-z]*$""")
-    private val phonePattern = Regex("""^\+?[\d*#-]+$""")
+    companion object {
+        val namePattern = Regex("""^[A-ZА-Я][а-яa-z]* [A-ZА-Я][а-яa-z]*$""")
+        private val phonePattern = Regex("""^\+?[\d*#-]+$""")
+    }
 
     private data class Person(val name: String) {
         val phones = mutableSetOf<String>()
@@ -35,11 +37,9 @@ class PhoneBook {
      */
     fun addHuman(name: String): Boolean {
         require(name.matches(namePattern))
-        for (person in entries) {
-            if (person.name == name)
-                return false
-        }
-        entries.add(Person(name))
+        if (name in entries)
+            return false
+        entries[name] = Person(name)
         return true
     }
 
@@ -50,12 +50,9 @@ class PhoneBook {
      * (во втором случае телефонная книга не должна меняться).
      */
     fun removeHuman(name: String): Boolean {
-        for (person in entries) {
-            if (person.name == name)
-                break
+        if (name !in entries)
             return false
-        }
-        entries.remove(Person(name))
+        entries.remove(name)
         return true
     }
 
@@ -68,16 +65,12 @@ class PhoneBook {
      */
     fun addPhone(name: String, phone: String): Boolean {
         require(phone.matches(phonePattern))
-        for (person in entries) {
+        if (name !in entries)
+            return false
+        for (person in entries.values)
             if (person.phones.contains(phone))
                 return false
-        }
-        for (person in entries) {
-            if (person.name == name) {
-                person.phones.add(phone)
-                break
-            }
-        }
+        entries[name]!!.phones.add(phone)
         return true
     }
 
@@ -88,15 +81,10 @@ class PhoneBook {
      * либо у него не было такого номера телефона.
      */
     fun removePhone(name: String, phone: String): Boolean {
-        for (person in entries) {
-            if (person.name == name) {
-                if (!person.phones.contains(phone))
-                    return false
-                person.phones.remove(phone)
-                return true
-            }
-        }
-        return false
+        if (name !in entries || !entries[name]!!.phones.contains(phone))
+            return false
+        entries[name]!!.phones.remove(phone)
+        return true
     }
 
     /**
@@ -104,11 +92,9 @@ class PhoneBook {
      * Если этого человека нет в книге, вернуть пустой список
      */
     fun phones(name: String): Set<String> {
-        for (person in entries) {
-            if (person.name == name)
-                return person.phones
-        }
-        return setOf()
+        if (name !in entries)
+            return setOf()
+        return entries[name]!!.phones
     }
 
     /**
@@ -116,7 +102,7 @@ class PhoneBook {
      * Если такого номера нет в книге, вернуть null.
      */
     fun humanByPhone(phone: String): String? {
-        for (person in entries) {
+        for (person in entries.values) {
             if (person.phones.contains(phone))
                 return person.name
         }
@@ -132,8 +118,8 @@ class PhoneBook {
         if (this === other) return true
         if (other !is PhoneBook || entries.size != other.entries.size) return false
         var n = false
-        for (person in entries) {
-            for (person2 in other.entries) {
+        for (person in entries.values) {
+            for (person2 in other.entries.values) {
                 if (person.name == person2.name && person.phones == person2.phones) {
                     n = true
                     break
