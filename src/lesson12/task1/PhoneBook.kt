@@ -67,9 +67,8 @@ class PhoneBook {
         require(phone.matches(phonePattern))
         if (name !in entries)
             return false
-        for (person in entries.values)
-            if (person.phones.contains(phone))
-                return false
+        if (entries.values.any { it.phones.contains(phone) })
+            return false
         entries[name]!!.phones.add(phone)
         return true
     }
@@ -102,11 +101,10 @@ class PhoneBook {
      * Если такого номера нет в книге, вернуть null.
      */
     fun humanByPhone(phone: String): String? {
-        for (person in entries.values) {
-            if (person.phones.contains(phone))
-                return person.name
-        }
-        return null
+        val a = entries.values.filter { it.phones.contains(phone) }
+        if (a.isEmpty())
+            return null
+        return a[0].name
     }
 
     /**
